@@ -7,6 +7,10 @@ import {
 } from '../src/lib/AlurakutCommons';
 import { ProfileRelationsBoxWrapper } from '../src/components/ProfileRelations';
 
+const Title = styled.h1`
+  font-size: 50px;
+  color: ${({ theme }) => theme.colors.primary};
+`;
 function ProfileSidebar(propriedades) {
   console.log(propriedades);
   return (
@@ -20,7 +24,8 @@ function ProfileSidebar(propriedades) {
 }
 
 export default function Home() {
-  const usuarioAleatorio = 'phpdevroot';
+  return <Title>My page</Title>;
+  const usuarioAleatorio = 'omariosouto';
   const pessoasFavoritas = [
     'juunegreiros',
     'omariosouto',

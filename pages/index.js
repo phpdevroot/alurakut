@@ -1,4 +1,6 @@
 import React from 'react';
+import nookies from 'nookies';
+import jwt from 'jsonwebtoken';
 import MainGrid from '../src/components/MainGrid';
 import Box from '../src/components/Box';
 import {
@@ -35,27 +37,15 @@ function ProfileRelationsBox(propriedades) {
         {propriedades.title} ({propriedades.items.length})
       </h2>
       <ul>
-        {/* {seguidores.map((itemAtual) => {
-          return (
-            <li key={itemAtual}>
-              <a href={`https://github.com/${itemAtual}.png`}>
-                <img src={itemAtual.image} />
-                <span>{itemAtual.title}</span>
-              </a>
-            </li>
-          )
-        })} */}
+        <div>Fotos dos usuarios</div>
       </ul>
     </ProfileRelationsBoxWrapper>
   );
 }
 
-export default function Home() {
-  const usuarioAleatorio = 'phpdevroot';
+export default function Home(props) {
+  const usuarioAleatorio = props.githubUser;
   const [comunidades, setComunidades] = React.useState([]);
-  // const comunidades = comunidades[0];
-  // const alteradorDeComunidades/setComunidades = comunidades[1];
-  // const comunidades = ['Alurakut'];
   const pessoasFavoritas = [
     'juunegreiros',
     'omariosouto',
@@ -171,6 +161,73 @@ export default function Home() {
               <button>Criar comunidade</button>
             </form>
           </Box>
+
+          {/*
+          <Box>
+            <h2 className="subTitle">
+              <strong>Scraps</strong>
+            </h2>
+            <form
+              onSubmit={function handleCriaComunidade(e) {
+                e.preventDefault();
+                const dadosDoForm = new FormData(e.target);
+                console.log('Campo: ', dadosDoForm.get('title'));
+                console.log('Campo: ', dadosDoForm.get('image'));
+
+                const comunidade = {
+                  title: dadosDoForm.get('title'),
+                  imageUrl: dadosDoForm.get('image'),
+                  creatorSlug: githubUser,
+                };
+
+                fetch('/api/comunidades', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(comunidade),
+                }).then(async (response) => {
+                  const dados = await response.json();
+                  console.log(dados.registroCriado);
+                  const comunidade = dados.registroCriado;
+                  const comunidadesAtualizadas = [...comunidades, comunidade];
+                  setComunidades(comunidadesAtualizadas);
+                });
+              }}
+            >
+              <div>
+                <input
+                  placeholder="Seu Usuario do GitHub"
+                  name="title"
+                  aria-label="Seu Usuario do GitHub"
+                  type="text"
+                />
+              </div>
+              <div>
+                <input
+                  placeholder="Sua Mensagem"
+                  name="image"
+                  aria-label="Sua Mensagem"
+                />
+              </div>
+
+              <button>Manda o Scrap</button>
+            </form>
+          </Box>
+
+          <Box>
+            <div>
+              <input
+                placeholder="Scrap"
+                name="image"
+                aria-label="Sua Mensagem"
+              />
+            </div>
+          </Box>
+
+          */}
+
+          {/*  ZEBRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA */}
         </div>
         <div
           className="profileRelationsArea"
@@ -213,4 +270,18 @@ export default function Home() {
       </MainGrid>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  const cookies = nookies.get(context);
+  const token = cookies.USER_TOKEN;
+  const { githubUser } = jwt.decode(token);
+  //console.log('teste token' + 'Cookies', nookies.get(context)); // token
+  console.log('>>>>> Token decodificado <<<<<<', jwt.decode(token));
+
+  return {
+    props: {
+      githubUser,
+    }, // will be passed to the page component as props
+  };
 }

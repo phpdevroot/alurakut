@@ -58,17 +58,17 @@ export default function Home() {
   // const comunidades = ['Alurakut'];
   const pessoasFavoritas = [
     'juunegreiros',
-    'vanessametonini',
+    'omariosouto',
     'rafaballerini',
     'peas',
-    'omariosouto',
+    'akitaonrails',
     'guilhermesilveira',
   ];
   const [seguidores, setSeguidores] = React.useState([]);
   // 0 - Pegar o array de dados do github
   React.useEffect(function () {
     // GET
-    fetch('https://api.github.com/users/rafaballerini/followers')
+    fetch('https://api.github.com/users/akitaonrails/followers')
       .then(function (respostaDoServidor) {
         return respostaDoServidor.json();
       })

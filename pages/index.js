@@ -36,9 +36,7 @@ function ProfileRelationsBox(propriedades) {
       <h2 className="smallTitle">
         {propriedades.title} ({propriedades.items.length})
       </h2>
-      <ul>
-        <div>Fotos dos usuarios</div>
-      </ul>
+      <ul>{<div>fotos</div>}</ul>
     </ProfileRelationsBoxWrapper>
   );
 }
@@ -46,6 +44,7 @@ function ProfileRelationsBox(propriedades) {
 export default function Home(props) {
   const usuarioAleatorio = props.githubUser;
   const [comunidades, setComunidades] = React.useState([]);
+
   const pessoasFavoritas = [
     'juunegreiros',
     'omariosouto',
@@ -58,19 +57,17 @@ export default function Home(props) {
   // 0 - Pegar o array de dados do github
   React.useEffect(function () {
     // GET
-    fetch('https://api.github.com/users/akitaonrails/followers')
+    fetch('https://api.github.com/users/peas/followers')
       .then(function (respostaDoServidor) {
         return respostaDoServidor.json();
       })
       .then(function (respostaCompleta) {
         setSeguidores(respostaCompleta);
       });
-
     // API GraphQL
     fetch('https://graphql.datocms.com/', {
       method: 'POST',
       headers: {
-        //41587ee9097157c0039644548dcf84
         Authorization: '41587ee9097157c0039644548dcf84',
         'Content-Type': 'application/json',
         Accept: 'application/json',
@@ -96,7 +93,6 @@ export default function Home(props) {
     //   return response.json()
     // })
   }, []);
-
   console.log('seguidores antes do return', seguidores);
   // 1 - Criar um box que vai ter um map, baseado nos items do array
   // que pegamos do GitHub
@@ -121,13 +117,11 @@ export default function Home(props) {
                 const dadosDoForm = new FormData(e.target);
                 console.log('Campo: ', dadosDoForm.get('title'));
                 console.log('Campo: ', dadosDoForm.get('image'));
-
                 const comunidade = {
                   title: dadosDoForm.get('title'),
                   imageUrl: dadosDoForm.get('image'),
                   creatorSlug: usuarioAleatorio,
                 };
-
                 fetch('/api/comunidades', {
                   method: 'POST',
                   headers: {
@@ -161,73 +155,6 @@ export default function Home(props) {
               <button>Criar comunidade</button>
             </form>
           </Box>
-
-          {/*
-          <Box>
-            <h2 className="subTitle">
-              <strong>Scraps</strong>
-            </h2>
-            <form
-              onSubmit={function handleCriaComunidade(e) {
-                e.preventDefault();
-                const dadosDoForm = new FormData(e.target);
-                console.log('Campo: ', dadosDoForm.get('title'));
-                console.log('Campo: ', dadosDoForm.get('image'));
-
-                const comunidade = {
-                  title: dadosDoForm.get('title'),
-                  imageUrl: dadosDoForm.get('image'),
-                  creatorSlug: githubUser,
-                };
-
-                fetch('/api/comunidades', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify(comunidade),
-                }).then(async (response) => {
-                  const dados = await response.json();
-                  console.log(dados.registroCriado);
-                  const comunidade = dados.registroCriado;
-                  const comunidadesAtualizadas = [...comunidades, comunidade];
-                  setComunidades(comunidadesAtualizadas);
-                });
-              }}
-            >
-              <div>
-                <input
-                  placeholder="Seu Usuario do GitHub"
-                  name="title"
-                  aria-label="Seu Usuario do GitHub"
-                  type="text"
-                />
-              </div>
-              <div>
-                <input
-                  placeholder="Sua Mensagem"
-                  name="image"
-                  aria-label="Sua Mensagem"
-                />
-              </div>
-
-              <button>Manda o Scrap</button>
-            </form>
-          </Box>
-
-          <Box>
-            <div>
-              <input
-                placeholder="Scrap"
-                name="image"
-                aria-label="Sua Mensagem"
-              />
-            </div>
-          </Box>
-
-          */}
-
-          {/*  ZEBRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA */}
         </div>
         <div
           className="profileRelationsArea"
@@ -275,10 +202,25 @@ export default function Home(props) {
 export async function getServerSideProps(context) {
   const cookies = nookies.get(context);
   const token = cookies.USER_TOKEN;
-  const { githubUser } = jwt.decode(token);
-  //console.log('teste token' + 'Cookies', nookies.get(context)); // token
-  console.log('>>>>> Token decodificado <<<<<<', jwt.decode(token));
+  const { isAuthenticated } = await fetch(
+    'https://alurakut.vercel.app/api/auth',
+    {
+      headers: {
+        Authorization: token,
+      },
+    }
+  ).then((resposta) => resposta.json());
 
+  if (!isAuthenticated) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
+
+  const { githubUser } = jwt.decode(token);
   return {
     props: {
       githubUser,

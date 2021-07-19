@@ -20,22 +20,6 @@ export default async function recebedorDeRequests(request, response) {
     return;
   }
 
-  /*
-  const scrap = await client.items.create({
-    itemType: '977314', // ID do Model de "scrap" criado pelo Dato
-    ...request.body,
-  });
-
-  console.log(scrap);
-
-  response.json({
-    dados: 'Mensagem',
-    scrap: scrap,
-  });
-  return;
-}  
-*/
-
   response.status(404).json({
     message: 'Ainda não temos nada no GET, mas no POST tem!',
   });

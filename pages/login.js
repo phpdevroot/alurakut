@@ -5,7 +5,7 @@ import nookies from 'nookies';
 
 export default function LoginScreen() {
   const router = useRouter();
-  const [githubUser, setGithubUser] = React.useState('phpdevroot');
+  const [githubUser, setGithubUser] = React.useState('omariosouto');
 
   return (
     <main
@@ -39,7 +39,7 @@ export default function LoginScreen() {
             className="box"
             onSubmit={(infosDoEvento) => {
               infosDoEvento.preventDefault();
-              // alert('clique no botão!')
+              // alert('Alguém clicou no botão!')
               console.log('Usuário: ', githubUser);
               fetch('https://alurakut.vercel.app/api/login', {
                 method: 'POST',
@@ -52,7 +52,7 @@ export default function LoginScreen() {
                 const token = dadosDaResposta.token;
                 nookies.set(null, 'USER_TOKEN', token, {
                   path: '/',
-                  maxAge: 86400 * 7, // tempo de vida do cookie
+                  maxAge: 86400 * 7,
                 });
                 router.push('/');
               });
